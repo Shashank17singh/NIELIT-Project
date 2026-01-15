@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 
 
-# ---------------------------- DATA + MODEL ---------------------------- #
 def train_model():
     """Train and return a Linear Regression model with sample dataset."""
     data = {
@@ -34,7 +33,6 @@ def train_model():
     return model, location_map, parking_map
 
 
-# ---------------------------- GUI APP ---------------------------- #
 class HousePricePredictorApp:
     def __init__(self, root, model, location_map, parking_map):
         self.root = root
@@ -172,7 +170,6 @@ class HousePricePredictorApp:
             messagebox.showerror("Input Error", "Please fill all fields correctly (numbers + dropdowns).")
 
 
-# ---------------------------- MAIN ---------------------------- #
 def main():
     model, location_map, parking_map = train_model()
 
