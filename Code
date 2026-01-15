@@ -1,0 +1,245 @@
+import tkinter as tk
+from tkinter import ttk
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+
+# ------------------------ 1) SAMPLE DATASET ------------------------
+# This is a small sample dataset of house details and their prices.
+# We will train our model using this data.
+data = {
+    'Area': [1200, 800, 1600, 1000, 1400, 1800, 1100, 950, 1300],
+    'Bedrooms': [3, 2, 4, 2, 3, 4, 2, 1, 3],
+    'Bathrooms': [2, 1, 3, 2, 2, 3, 1, 1, 2],
+    'Location': ['Standard', 'Budget', 'Premium', 'Standard', 'Premium', 'Premium', 'Budget', 'Budget', 'Standard'],
+    'Parking': ['Yes', 'No', 'Yes', 'No', 'Yes', 'Yes', 'No', 'No', 'Yes'],
+    'Age': [5, 10, 2, 8, 3, 1, 7, 9, 4],
+    'Price': [6800000, 3500000, 9500000, 5000000, 8200000, 10500000, 4200000, 3100000, 7200000]
+}
+
+# Convert the dictionary into a Pandas DataFrame (table format)
+df = pd.DataFrame(data)
+
+
+# ------------------------ 2) CONVERT TEXT TO NUMBERS ------------------------
+# Machine learning models work only with numbers.
+# So we convert Location and Parking values into numeric form manually.
+location_map = {"Budget": 0, "Standard": 1, "Premium": 2}
+parking_map = {"No": 0, "Yes": 1}
+
+df['Location'] = df['Location'].map(location_map)
+df['Parking'] = df['Parking'].map(parking_map)
+
+
+# ------------------------ 3) TRAIN THE MACHINE LEARNING MODEL ------------------------
+# X = Input features (all columns except Price)
+# y = Output label (Price column)
+X = df.drop('Price', axis=1)
+y = df['Price']
+
+# We are using Linear Regression for house price prediction
+model = LinearRegression()
+model.fit(X, y)   # This line trains the model
+
+
+# ------------------------ 4) CREATE THE GUI WINDOW ------------------------
+root = tk.Tk()
+root.title("🏡 House Price Predictor")
+root.geometry("400x570")
+root.configure(bg="#f4f4f4")
+root.resizable(False, False)
+
+
+# ------------------------ 5) FONTS (JUST FOR GOOD LOOKING UI) ------------------------
+font_label = ("Calibri", 11)
+font_heading = ("Calibri", 18, "bold")
+font_button = ("Calibri", 13, "bold")
+font_result = ("Calibri", 14, "bold")
+font_dropdown = ("Calibri", 11)
+
+
+# ------------------------ 6) HEADING ------------------------
+tk.Label(root, text="🏠 House Price Predictor", font=font_heading, bg="#f4f4f4").pack(pady=(10, 15))
+
+
+# ------------------------ 7) FUNCTION TO CREATE INPUT BOXES EASILY ------------------------
+# This function creates a label + entry box in a clean format.
+def labeled_entry(label_text):
+    frame = tk.Frame(root, bg="#f4f4f4")
+    tk.Label(frame, text=label_text, font=font_label, bg="#f4f4f4").pack(anchor='w', pady=(5, 0))
+    entry = tk.Entry(frame, font=font_label)
+    entry.pack(fill='x', pady=(0, 5))
+    frame.pack(fill='x', padx=10)
+    return entry
+
+# Input boxes
+area_entry = labeled_entry("Area (in sqft):")
+bedrooms_entry = labeled_entry("Number of Bedrooms:")
+bathrooms_entry = labeled_entry("Number of Bathrooms:")
+
+
+# ------------------------ 8) LOCATION DROPDOWN ------------------------
+location_var = tk.StringVar()
+frame_loc = tk.Frame(root, bg="#f4f4f4")
+
+tk.Label(frame_loc, text="Location:", font=font_label, bg="#f4f4f4").pack(anchor='w', pady=(5, 0))
+
+dropdown_loc = ttk.Combobox(
+    frame_loc,
+    textvariable=location_var,
+    values=["Budget", "Standard", "Premium"],
+    state="readonly",
+    font=font_dropdown
+)
+
+dropdown_loc.pack(fill='x', pady=(0, 5))
+frame_loc.pack(fill='x', padx=10)
+
+
+# ------------------------ 9) PARKING DROPDOWN ------------------------
+parking_var = tk.StringVar()
+frame_park = tk.Frame(root, bg="#f4f4f4")
+
+tk.Label(frame_park, text="Parking:", font=font_label, bg="#f4f4f4").pack(anchor='w', pady=(5, 0))
+
+dropdown_park = ttk.Combobox(
+    frame_park,
+    textvariable=parking_var,
+    values=["No", "Yes"],
+    state="readonly",
+    font=font_dropdown
+)
+
+dropdown_park.pack(fill='x', pady=(0, 5))
+frame_park.pack(fill='x', padx=10)
+
+
+# Input box for property age
+age_entry = labeled_entry("Age of Property (Years):")
+
+
+# ------------------------ 10) RESULT DISPLAY AREA ------------------------
+# This part shows the predicted price after clicking the predict button.
+result_var = tk.StringVar()
+
+result_frame = tk.Frame(root, bg="#e0f8e0", bd=2, relief="ridge", padx=10, pady=12)
+result_label = tk.Label(
+    result_frame,
+    textvariable=result_var,
+    font=font_result,
+    fg="#064420",
+    bg="#e0f8e0",
+    justify="center",
+    wraplength=320
+)
+
+result_label.pack()
+
+# Hide result box at start (it will appear after prediction)
+result_frame.pack_forget()
+
+
+# ------------------------ 11) SIMPLE ERROR MESSAGE WINDOW ------------------------
+# If user enters wrong input, this window will show an error message.
+def show_error(message):
+    error_win = tk.Toplevel(root)
+    error_win.title("Input Error")
+    error_win.geometry("360x160")
+    error_win.configure(bg="white")
+    error_win.resizable(False, False)
+    error_win.grab_set()
+    error_win.attributes('-topmost', True)
+
+    outer = tk.Frame(error_win, bg="white", padx=10, pady=10)
+    outer.pack(fill="both", expand=True)
+
+    tk.Label(
+        outer,
+        text="❌ Input Error",
+        font=("Calibri", 14, "bold"),
+        fg="#b30000",
+        bg="white"
+    ).pack(pady=(5, 2))
+
+    tk.Label(
+        outer,
+        text=message,
+        font=("Calibri", 11),
+        bg="white",
+        fg="#333333",
+        wraplength=320,
+        justify="center"
+    ).pack(pady=(0, 10))
+
+    tk.Button(
+        outer,
+        text="OK",
+        command=error_win.destroy,
+        font=("Calibri", 11, "bold"),
+        bg="#d9534f",
+        fg="white",
+        relief="flat",
+        padx=15,
+        pady=5
+    ).pack()
+
+
+# ------------------------ 12) PREDICT FUNCTION ------------------------
+# This function runs when the "Predict Price" button is clicked.
+def predict_price():
+    try:
+        # Get numeric values from input boxes
+        area = float(area_entry.get())
+        bedrooms = int(bedrooms_entry.get())
+        bathrooms = int(bathrooms_entry.get())
+        age = int(age_entry.get())
+
+        # Get dropdown selected values
+        loc_text = location_var.get()
+        park_text = parking_var.get()
+
+        # If user does not select dropdown values, show error
+        if not loc_text or not park_text:
+            raise ValueError
+
+        # Convert dropdown text into numbers using mapping
+        loc_encoded = location_map[loc_text]
+        park_encoded = parking_map[park_text]
+
+        # Create input data in DataFrame form (same format used in training)
+        input_df = pd.DataFrame([{
+            'Area': area,
+            'Bedrooms': bedrooms,
+            'Bathrooms': bathrooms,
+            'Location': loc_encoded,
+            'Parking': park_encoded,
+            'Age': age
+        }])
+
+        # Predict the price using trained model
+        predicted_price = model.predict(input_df)[0]
+
+        # Show result in the GUI
+        result_var.set(f"Estimated House Price:\n₹{int(predicted_price)}")
+        result_frame.pack(pady=15, padx=10, fill='x')
+
+    except:
+        show_error("Please fill all fields correctly (numbers + dropdowns).")
+
+
+# ------------------------ 13) PREDICT BUTTON ------------------------
+tk.Button(
+    root,
+    text="Predict Price",
+    command=predict_price,
+    bg="#007F5F",
+    fg="white",
+    font=font_button,
+    relief="flat",
+    padx=10,
+    pady=5
+).pack(pady=(15, 0))
+
+
+# ------------------------ 14) START THE GUI ------------------------
+root.mainloop()
