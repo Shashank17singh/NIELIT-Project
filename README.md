@@ -18,6 +18,40 @@ A simple House Price Prediction app built using a **Python Tkinter GUI** and **L
 
 ---
 
+
+
+### 🏗️ Application Flow
+
+`mermaid
+graph TD
+    subgraph "Tkinter Frontend"
+    A[User Selects Location & Parking]
+    B[User Enters Square Footage etc.]
+    A --> C(Click 'Predict Price')
+    B --> C
+    end
+    
+    subgraph "Backend Logic"
+    C --> D{Input Validation}
+    D -->|Valid| E(Data Encoding)
+    D -->|Invalid| F[Show Error Popup]
+    end
+    
+    subgraph "Machine Learning"
+    E --> G{Scikit-Learn Model}
+    G -->|Linear Regression| H[Price Estimate]
+    H --> I[Update UI Label]
+    end
+    
+    classDef io fill:#f9f0ff,stroke:#8a2be2,stroke-width:2px,color:#000;
+    classDef core fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
+    classDef logic fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000;
+    
+    class A,B,C,F,I io;
+    class D,E core;
+    class G,H logic;
+`
+
 ## ✨ Features
 
 | | |
