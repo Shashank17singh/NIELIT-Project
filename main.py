@@ -31,7 +31,7 @@ model, location_map, parking_map = train_model()
 
 # --- Web UI ---
 st.set_page_config(page_title="House Price Predictor", page_icon="🏡")
-st.title("🏡 House Price Predictor")
+st.title("House Price Predictor")
 
 # Inputs
 area = st.number_input("Area (in sqft):", min_value=100.0, value=1000.0, step=50.0)
