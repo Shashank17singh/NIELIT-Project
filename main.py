@@ -11,7 +11,7 @@ def train_model():
         "Location": ["Standard", "Budget", "Premium", "Standard", "Premium", "Premium", "Budget", "Budget", "Standard"],
         "Parking": ["Yes", "No", "Yes", "No", "Yes", "Yes", "No", "No", "Yes"],
         "Age": [5, 10, 2, 8, 3, 1, 7, 9, 4],
-        "Price": [6800000, 3500000, 9500000, 5000000, 8200000, 10500000, 4200000, 3100000, 7200000]
+        "Price": [8400000, 3200000, 12700000, 5800000, 10800000, 13900000, 5300000, 3650000, 9100000]
     }
     df = pd.DataFrame(data)
     location_map = {"Budget": 0, "Standard": 1, "Premium": 2}
