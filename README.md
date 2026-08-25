@@ -22,7 +22,7 @@ A simple House Price Prediction app built using a **Python Tkinter GUI** and **L
 
 ### 🏗️ Application Flow
 
-`mermaid
+```mermaid
 graph TD
     subgraph "Tkinter Frontend"
     A[User Selects Location & Parking]
@@ -50,7 +50,7 @@ graph TD
     class A,B,C,F,I io;
     class D,E core;
     class G,H logic;
-`
+```
 
 ## ✨ Features
 
