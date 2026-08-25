@@ -29,6 +29,18 @@ def train_model():
 
 model, location_map, parking_map = train_model()
 
+def format_inr(number):
+    s = str(int(number))
+    if len(s) <= 3:
+        return s
+    res = s[-3:]
+    s = s[:-3]
+    while len(s) > 2:
+        res = s[-2:] + "," + res
+        s = s[:-2]
+    res = s + "," + res
+    return res
+
 # --- Web UI ---
 st.set_page_config(page_title="House Price Predictor", page_icon="🏡")
 st.title("House Price Predictor")
@@ -50,5 +62,5 @@ if st.button("Predict Price", type="primary"):
         "Location": loc_encoded, "Parking": park_encoded, "Age": age
     }])
     
-    predicted_price = model.predict(input_df)[0]
-    st.success(f"### Estimated House Price: ₹{int(predicted_price):,}")
+    predicted_price = max(0, model.predict(input_df)[0])
+    st.success(f"### Estimated House Price: ₹{format_inr(predicted_price)}")
