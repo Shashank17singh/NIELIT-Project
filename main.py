@@ -42,7 +42,7 @@ def format_inr(number):
     return res
 
 # --- Web UI ---
-st.set_page_config(page_title="House Price Predictor", page_icon="🏡")
+st.set_page_config(page_title="House Price Predictor", page_icon="")
 st.title("House Price Predictor")
 
 # Inputs

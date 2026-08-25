@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏠 House Price Predictor
+#  House Price Predictor
 
 **A desktop GUI app that predicts house prices using Linear Regression, built with Tkinter and scikit-learn**
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 A simple House Price Prediction app built using a **Python Tkinter GUI** and **Linear Regression** (scikit-learn). Users pick a location and parking option from dropdowns, enter house details, and get an instant price estimate — no browser or server required.
 
@@ -20,7 +20,7 @@ A simple House Price Prediction app built using a **Python Tkinter GUI** and **L
 
 
 
-### 🏗️ Application Flow
+###  Application Flow
 
 ```mermaid
 graph TD
@@ -52,18 +52,18 @@ graph TD
     class G,H logic;
 ```
 
-## ✨ Features
+##  Features
 
 | | |
 |---|---|
-| 🖥️ **User-Friendly GUI** | Built entirely with Python's standard-library Tkinter |
-| 🧠 **Linear Regression Model** | Trained on a sample housing dataset with pandas + scikit-learn |
-| 📍 **Dropdown Inputs** | Location and parking selection via dropdown menus |
-| 🛡️ **Error Handling** | Validates inputs and handles invalid entries gracefully |
+|  **User-Friendly GUI** | Built entirely with Python's standard-library Tkinter |
+|  **Linear Regression Model** | Trained on a sample housing dataset with pandas + scikit-learn |
+|  **Dropdown Inputs** | Location and parking selection via dropdown menus |
+|  **Error Handling** | Validates inputs and handles invalid entries gracefully |
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 **Language** — Python 3.x
 **GUI Framework** — Tkinter (Python standard library)
@@ -71,7 +71,7 @@ graph TD
 
 ---
 
-## ⚙️ Setup and Installation
+##  Setup and Installation
 
 ### 1. Clone the repository
 
