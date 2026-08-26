@@ -63,9 +63,9 @@ graph TD
 
 ## Tech Stack
 
-**Language** — Python 3.x
-**Web Framework** — Streamlit
-**Machine Learning** — pandas · scikit-learn (Linear Regression)
+**Language** - Python 3.x
+**Web Framework** - Streamlit
+**Machine Learning** - pandas · scikit-learn (Linear Regression)
 
 ---
 
