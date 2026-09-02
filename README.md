@@ -1,12 +1,14 @@
 <div align="center">
 
-# House Price Predictor
+# House Price Predictor (Random Forest)
 
-**A responsive web application that predicts house prices using Linear Regression, built with Streamlit and scikit-learn**
+**An end-to-end Machine Learning pipeline that predicts Mumbai house prices using a Random Forest Regressor, built with Streamlit and scikit-learn.**
 
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Linear%20Regression-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Random%20Forest-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![Pandas](https://img.shields.io/badge/Pandas-Data%20Wrangling-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-Analytics-11557c?style=for-the-badge&logo=python&logoColor=white)](https://matplotlib.org/)
 
 </div>
 
@@ -14,58 +16,70 @@
 
 ## Overview
 
-A simple House Price Prediction web application built using **Streamlit** and **Linear Regression** (scikit-learn). Users pick a location and parking option from dropdowns, enter house details (area, bedrooms, bathrooms, and age), and get an instant price estimate powered by localized INR pricing algorithms and age-depreciation logic.
+A robust House Price Prediction web application built using **Streamlit** and a **Random Forest Regressor** pipeline (scikit-learn). Trained on a real-world dataset of **76,000+ Mumbai property listings**, the application processes dynamic user inputs through a `ColumnTransformer` (scaling numerical features and encoding categoricals) to provide high-accuracy, localized INR price estimates.
+
+It also features a dedicated **Data Analytics** tab providing data visualizations (scatter plots and bar charts) powered by Matplotlib to explore pricing trends across the Mumbai real estate landscape.
 
 ---
 
-### Application Flow
+### Application Architecture
 
 ```mermaid
 graph TD
     subgraph "Streamlit Frontend"
-    A[User Selects Location & Parking]
-    B[User Enters Square Footage, Age, etc.]
-    A --> C(Click 'Predict Price')
-    B --> C
+    A[Prediction Tab]
+    B[Analytics Tab]
+    A --> C(User Inputs Features)
+    C --> D(Click 'Predict Price')
     end
     
-    subgraph "Backend Logic"
-    C --> D{Input Validation}
-    D -->|Valid| E(Data Encoding)
-    D -->|Invalid| F[Show Error Message]
+    subgraph "Data Pipeline (scikit-learn)"
+    E[Mumbai Property Dataset: 76,000+ Rows]
+    E --> F[Train/Test Split]
+    F --> G[ColumnTransformer Pipeline]
+    G --> H(StandardScaler)
+    G --> I(OneHotEncoder)
     end
     
-    subgraph "Machine Learning"
-    E --> G{Scikit-Learn Model}
-    G -->|Linear Regression| H[Price Estimate]
-    H --> I[Update UI with formatted INR]
+    subgraph "Machine Learning Engine"
+    H & I --> J{Random Forest Regressor}
+    J --> K[R² Score & MAE Metrics]
+    D --> L[Transform User Input]
+    L --> J
+    J --> M[Price Estimate INR]
+    end
+    
+    subgraph "Data Analytics (Matplotlib)"
+    B --> N[Load Dataset]
+    N --> O[Generate Scatter & Bar Charts]
     end
     
     classDef io fill:#f9f0ff,stroke:#8a2be2,stroke-width:2px,color:#000;
     classDef core fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
     classDef logic fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000;
     
-    class A,B,C,F,I io;
-    class D,E core;
-    class G,H logic;
+    class A,B,C,D,M,O io;
+    class E,F,G,H,I,L,N core;
+    class J,K logic;
 ```
 
 ## Features
 
 | | |
 |---|---|
-| **Responsive Web App** | Built entirely with Streamlit for a fast, interactive experience |
-| **Linear Regression Model** | Trained on a sample housing dataset with pandas + scikit-learn |
-| **Realistic INR Pricing** | Predicts prices mapped to the Indian number system formatting |
-| **Age Depreciation** | Automatically accounts for property age in pricing logic |
+| **Random Forest Regressor** | High-accuracy modeling pipeline trained on 76k+ records |
+| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding |
+| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib |
+| **Responsive UI** | Built entirely with Streamlit for a fast, interactive experience |
 
 ---
 
 ## Tech Stack
 
-**Language** - Python 3.x
-**Web Framework** - Streamlit
-**Machine Learning** - pandas · scikit-learn (Linear Regression)
+- **Language** - Python 3.x
+- **Web Framework** - Streamlit
+- **Machine Learning** - scikit-learn (Random Forest Pipeline, ColumnTransformer)
+- **Data & Analytics** - pandas, NumPy, Matplotlib
 
 ---
 
@@ -90,6 +104,6 @@ pip install -r requirements.txt
 streamlit run main.py
 ```
 
-Fill in the house details, select a location and parking option, and click predict to see the estimated price.
+Switch between the **Prediction** and **Analytics** tabs from the sidebar to explore the application!
 
 ---
