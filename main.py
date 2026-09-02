@@ -82,8 +82,8 @@ def format_inr(number):
     return "₹" + res
 
 # UI
-st.set_page_config(page_title="Mumbai House Price Predictor", page_icon="🏠", layout="wide")
-st.title("Mumbai House Price Predictor 🏠")
+st.set_page_config(page_title="Mumbai House Price Predictor", layout="wide")
+st.title("Mumbai House Price Predictor")
 
 tab1, tab2 = st.tabs(["Price Predictor", "Data Analytics"])
 
