@@ -1,34 +1,66 @@
 import streamlit as st
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
 
-@st.cache_resource # Caches the model so it doesn't retrain on every click
-def train_model():
-    data = {
-        "Area": [1200, 800, 1600, 1000, 1400, 1800, 1100, 950, 1300],
-        "Bedrooms": [3, 2, 4, 2, 3, 4, 2, 1, 3],
-        "Bathrooms": [2, 1, 3, 2, 2, 3, 1, 1, 2],
-        "Location": ["Standard", "Budget", "Premium", "Standard", "Premium", "Premium", "Budget", "Budget", "Standard"],
-        "Parking": ["Yes", "No", "Yes", "No", "Yes", "Yes", "No", "No", "Yes"],
-        "Age": [5, 10, 2, 8, 3, 1, 7, 9, 4],
-        "Price": [12900000, 4850000, 19500000, 8950000, 16750000, 21100000, 7300000, 5050000, 13800000]
-    }
-    df = pd.DataFrame(data)
-    location_map = {"Budget": 0, "Standard": 1, "Premium": 2}
-    parking_map = {"No": 0, "Yes": 1}
+@st.cache_resource
+def load_and_train():
+    # Load dataset
+    df = pd.read_csv("Mumbai House Prices.csv")
     
-    df["Location"] = df["Location"].map(location_map)
-    df["Parking"] = df["Parking"].map(parking_map)
+    # 1. Clean Data
+    df = df.dropna(subset=['bhk', 'area', 'price', 'price_unit', 'region', 'type', 'status', 'age'])
     
-    X = df.drop("Price", axis=1)
-    y = df["Price"]
-    model = LinearRegression()
+    def convert_price(row):
+        p = row['price']
+        if row['price_unit'] == 'Cr':
+            return p * 10000000
+        elif row['price_unit'] == 'L':
+            return p * 100000
+        return p
+    
+    df['price_inr'] = df.apply(convert_price, axis=1)
+    
+    # 2. Filter outliers (keep it sensible)
+    df = df[df['area'] < 5000]
+    df = df[df['price_inr'] < 500000000] # 50 Cr max
+    df = df[df['bhk'] < 10]
+    
+    # 3. Simplify regions (Keep top 50, rest "Other")
+    top_regions = df['region'].value_counts().nlargest(50).index
+    df['region_clean'] = df['region'].where(df['region'].isin(top_regions), 'Other')
+    
+    # 4. Feature selection
+    X = df[['bhk', 'area', 'region_clean', 'type', 'status', 'age']]
+    y = df['price_inr']
+    
+    # 5. Build Pipeline
+    categorical_features = ['region_clean', 'type', 'status', 'age']
+    
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
+        ],
+        remainder='passthrough'
+    )
+    
+    model = Pipeline(steps=[
+        ('preprocessor', preprocessor),
+        ('regressor', RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1))
+    ])
+    
+    # 6. Train model
     model.fit(X, y)
     
-    return model, location_map, parking_map
+    return model, df
 
-model, location_map, parking_map = train_model()
+model, df = load_and_train()
 
+# INR formatter
 def format_inr(number):
     s = str(int(number))
     if len(s) <= 3:
@@ -39,28 +71,58 @@ def format_inr(number):
         res = s[-2:] + "," + res
         s = s[:-2]
     res = s + "," + res
-    return res
+    return "₹" + res
 
-# --- Web UI ---
-st.set_page_config(page_title="House Price Predictor", page_icon="")
-st.title("House Price Predictor")
+# UI
+st.set_page_config(page_title="Mumbai House Price Predictor", page_icon="🏠", layout="wide")
+st.title("Mumbai House Price Predictor 🏠")
 
-# Inputs
-area = st.number_input("Area (in sqft):", min_value=100.0, value=1000.0, step=50.0)
-bedrooms = st.number_input("Number of Bedrooms:", min_value=1, value=2)
-bathrooms = st.number_input("Number of Bathrooms:", min_value=1, value=2)
-location = st.selectbox("Location:", ["Budget", "Standard", "Premium"])
-parking = st.selectbox("Parking:", ["No", "Yes"])
-age = st.number_input("Age of Property (Years):", min_value=0, value=5)
+tab1, tab2 = st.tabs(["Price Predictor", "Data Analytics"])
 
-if st.button("Predict Price", type="primary"):
-    loc_encoded = location_map[location]
-    park_encoded = parking_map[parking]
+with tab1:
+    st.subheader("Estimate Property Value")
+    col1, col2 = st.columns(2)
     
-    input_df = pd.DataFrame([{
-        "Area": area, "Bedrooms": bedrooms, "Bathrooms": bathrooms,
-        "Location": loc_encoded, "Parking": park_encoded, "Age": age
-    }])
+    with col1:
+        area = st.number_input("Area (in sqft):", min_value=100.0, max_value=10000.0, value=1000.0, step=50.0)
+        bhk = st.number_input("Number of BHK:", min_value=1, max_value=10, value=2)
+        prop_type = st.selectbox("Property Type:", df['type'].unique())
+        
+    with col2:
+        region = st.selectbox("Region:", sorted(df['region_clean'].unique()))
+        status = st.selectbox("Status:", df['status'].unique())
+        age = st.selectbox("Age of Property:", df['age'].unique())
+        
+    if st.button("Predict Price", type="primary"):
+        input_data = pd.DataFrame([{
+            "bhk": bhk,
+            "area": area,
+            "region_clean": region,
+            "type": prop_type,
+            "status": status,
+            "age": age
+        }])
+        
+        pred = model.predict(input_data)[0]
+        st.success(f"### Estimated Price: {format_inr(pred)}")
+
+with tab2:
+    st.subheader("Market Insights (Mumbai)")
     
-    predicted_price = max(0, model.predict(input_df)[0])
-    st.success(f"### Estimated House Price: ₹{format_inr(predicted_price)}")
+    col3, col4 = st.columns(2)
+    with col3:
+        st.write("#### Average Price by Top 10 Regions")
+        top_10 = df[df['region_clean'] != 'Other'].groupby('region_clean')['price_inr'].mean().nlargest(10)
+        st.bar_chart(top_10)
+        
+    with col4:
+        st.write("#### Price vs Area")
+        # Sample for plotting speed
+        sample_df = df.sample(min(2000, len(df)))
+        fig, ax = plt.subplots()
+        ax.scatter(sample_df['area'], sample_df['price_inr']/10000000, alpha=0.5, c='#00a4d6')
+        ax.set_xlabel("Area (sqft)")
+        ax.set_ylabel("Price (Crores INR)")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        st.pyplot(fig)
