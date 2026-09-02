@@ -5,6 +5,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 
 @st.cache_resource
@@ -53,12 +55,18 @@ def load_and_train():
         ('regressor', RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1))
     ])
     
-    # 6. Train model
-    model.fit(X, y)
+    # 6. Train/Test Split & Train model
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model.fit(X_train, y_train)
     
-    return model, df
+    # Calculate metrics
+    y_pred = model.predict(X_test)
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    
+    return model, df, r2, mae
 
-model, df = load_and_train()
+model, df, r2, mae = load_and_train()
 
 # INR formatter
 def format_inr(number):
@@ -107,7 +115,15 @@ with tab1:
         st.success(f"### Estimated Price: {format_inr(pred)}")
 
 with tab2:
-    st.subheader("Market Insights (Mumbai)")
+    st.subheader("Market Insights & Model Performance")
+    
+    # Model Metrics Section
+    st.write("### Model Evaluation Metrics (Test Set)")
+    m1, m2 = st.columns(2)
+    m1.metric(label="R² Score (Accuracy)", value=f"{r2:.2f}")
+    m2.metric(label="Mean Absolute Error (MAE)", value=format_inr(mae))
+    
+    st.divider()
     
     col3, col4 = st.columns(2)
     with col3:
