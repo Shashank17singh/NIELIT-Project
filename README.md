@@ -16,7 +16,7 @@
 
 ## Overview
 
-A robust House Price Prediction web application built using **Streamlit** and a **Random Forest Regressor** pipeline (scikit-learn). Trained on a real-world dataset of **76,000+ Mumbai property listings**, the application processes dynamic user inputs through a `ColumnTransformer` (scaling numerical features and encoding categoricals) to provide high-accuracy, localized INR price estimates.
+Developed as part of NIELIT Data Science curriculum, this is a robust House Price Prediction web application built using **Streamlit** and a **Random Forest Regressor** pipeline (scikit-learn). Trained on a real-world dataset of **76,000+ Mumbai property listings**, the application processes dynamic user inputs through a `ColumnTransformer` (scaling numerical features and encoding categoricals) to provide high-accuracy, localized INR price estimates.
 
 It also features a dedicated **Data Analytics** tab providing data visualizations (scatter plots and bar charts) powered by Matplotlib to explore pricing trends across the Mumbai real estate landscape.
 
