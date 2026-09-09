@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
+import seaborn as sns
 @st.cache_resource
 def load_and_train():
     df = pd.read_csv("Mumbai House Prices.csv")
@@ -30,8 +31,10 @@ def load_and_train():
     X = df[["bhk", "area", "region_clean", "type", "status", "age"]]
     y = df["price_inr"]
     categorical_features = ["region_clean", "type", "status", "age"]
+    numeric_features = ["bhk", "area"]
     preprocessor = ColumnTransformer(
         transformers=[
+            ("num", StandardScaler(), numeric_features),
             ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
         ],
         remainder="passthrough",
@@ -129,3 +132,10 @@ with tab2:
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
         st.pyplot(fig)
+        
+    st.divider()
+    st.write("#### Feature Correlation Heatmap")
+    numeric_df = df[["bhk", "area", "price_inr"]].dropna()
+    fig2, ax2 = plt.subplots(figsize=(8, 6))
+    sns.heatmap(numeric_df.corr(), annot=True, cmap="coolwarm", fmt=".2f", ax=ax2)
+    st.pyplot(fig2)
