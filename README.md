@@ -107,3 +107,9 @@ streamlit run main.py
 Switch between the **Prediction** and **Analytics** tabs from the sidebar to explore the application!
 
 ---
+
+
+---
+
+## Deployment
+- **Dashboard URL:** https://nielit-project.streamlit.app/
