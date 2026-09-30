@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(page_title="House Price Predictor", layout="wide")
+
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
@@ -9,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 @st.cache_resource
 def load_and_train():
     df = pd.read_csv("Mumbai House Prices.csv")
@@ -68,7 +72,6 @@ def format_inr(number):
         s = s[:-2]
     res = s + "," + res
     return "₹" + res
-st.set_page_config(page_title="House Price Predictor", layout="wide")
 st.title("House Price Predictor")
 tab1, tab2 = st.tabs(["Price Predictor", "Data Analytics"])
 with tab1:
