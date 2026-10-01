@@ -15,11 +15,13 @@ import seaborn as sns
 
 @st.cache_resource
 def load_and_train():
+    """Loads the dataset, preprocesses it, and trains a RandomForestRegressor model."""
     df = pd.read_csv("Mumbai House Prices.csv")
     df = df.dropna(
         subset=["bhk", "area", "price", "price_unit", "region", "type", "status", "age"]
     )
-    def convert_price(row):
+    def convert_price(row: pd.Series) -> float:
+        """Converts price to INR based on the price unit (Cr, L)."""
         p = row["price"]
         if row["price_unit"] == "Cr":
             return p * 10000000
@@ -61,7 +63,10 @@ def load_and_train():
     mae = mean_absolute_error(y_test, y_pred)
     return model, df, r2, mae
 model, df, r2, mae = load_and_train()
-def format_inr(number):
+
+
+def format_inr(number: float) -> str:
+    """Formats a number into an Indian Rupee string (e.g., ₹1,00,000)."""
     s = str(int(number))
     if len(s) <= 3:
         return s
