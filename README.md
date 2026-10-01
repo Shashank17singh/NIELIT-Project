@@ -32,7 +32,7 @@ graph TD
     A --> C(User Inputs Features)
     C --> D(Click 'Predict Price')
     end
-    
+
     subgraph "Data Pipeline (scikit-learn)"
     E[Mumbai Property Dataset: 76,000+ Rows]
     E --> F[Train/Test Split]
@@ -40,7 +40,7 @@ graph TD
     G --> H(StandardScaler)
     G --> I(OneHotEncoder)
     end
-    
+
     subgraph "Machine Learning Engine"
     H & I --> J{Random Forest Regressor}
     J --> K[R² Score & MAE Metrics]
@@ -48,16 +48,16 @@ graph TD
     L --> J
     J --> M[Price Estimate INR]
     end
-    
+
     subgraph "Data Analytics (Matplotlib)"
     B --> N[Load Dataset]
     N --> O[Generate Scatter & Bar Charts]
     end
-    
+
     classDef io fill:#f9f0ff,stroke:#8a2be2,stroke-width:2px,color:#000;
     classDef core fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
     classDef logic fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000;
-    
+
     class A,B,C,D,M,O io;
     class E,F,G,H,I,L,N core;
     class J,K logic;
@@ -65,12 +65,12 @@ graph TD
 
 ## Features
 
-| | |
-|---|---|
-| **Random Forest Regressor** | High-accuracy modeling pipeline trained on 76k+ records |
-| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding |
-| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib |
-| **Responsive UI** | Built entirely with Streamlit for a fast, interactive experience |
+|                              |                                                                  |
+| ---------------------------- | ---------------------------------------------------------------- |
+| **Random Forest Regressor**  | High-accuracy modeling pipeline trained on 76k+ records          |
+| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding     |
+| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib            |
+| **Responsive UI**            | Built entirely with Streamlit for a fast, interactive experience |
 
 ---
 
@@ -108,18 +108,17 @@ Switch between the **Prediction** and **Analytics** tabs from the sidebar to exp
 
 ---
 
-
 ---
 
 ## Deployment
+
 - **Dashboard URL:** https://nielit-project.streamlit.app/
 
-
---- 
+---
 
 ## Deep Codebase Analysis
 
-| File | Purpose / Details |
-|---|---|
-| `main.py` | Core component logic and implementation details. |
+| File               | Purpose / Details                                |
+| ------------------ | ------------------------------------------------ |
+| `main.py`          | Core component logic and implementation details. |
 | `requirements.txt` | Core component logic and implementation details. |
