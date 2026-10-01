@@ -2,6 +2,76 @@ import streamlit as st
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
+CUSTOM_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Josefin+Sans:wght@300;400;500;600;700&display=swap');
+
+html, body, [class*="css"]  {
+    font-family: 'Josefin Sans', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif !important;
+    color: #0F766E !important;
+    font-weight: 700 !important;
+}
+
+.stApp {
+    background-color: #F0FDFA;
+    color: #134E4A;
+}
+
+[data-testid="stHeader"] {
+    background-color: rgba(240, 253, 250, 0.9) !important;
+}
+
+/* Glassmorphism Buttons */
+.stButton > button {
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #0369A1;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.stButton > button:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+}
+
+/* Glassmorphism Containers */
+[data-testid="stExpander"], [data-testid="stVerticalBlock"] > div > div > div[data-testid="stContainer"] {
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    padding: 15px;
+}
+
+/* Inputs */
+.stTextInput > div > div > input, .stSelectbox > div > div > div, .stNumberInput > div > div > input {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #99F6E4;
+    border-radius: 8px;
+    color: #134E4A;
+}
+.stTextInput > div > div > input:focus, .stSelectbox > div > div > div:focus, .stNumberInput > div > div > input:focus {
+    border-color: #0F766E;
+    box-shadow: 0 0 0 2px rgba(15,118,110,0.2);
+}
+</style>
+"""
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
