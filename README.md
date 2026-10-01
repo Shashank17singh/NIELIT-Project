@@ -113,3 +113,13 @@ Switch between the **Prediction** and **Analytics** tabs from the sidebar to exp
 
 ## Deployment
 - **Dashboard URL:** https://nielit-project.streamlit.app/
+
+
+--- 
+
+## Deep Codebase Analysis
+
+| File | Purpose / Details |
+|---|---|
+| `main.py` | Core component logic and implementation details. |
+| `requirements.txt` | Core component logic and implementation details. |
