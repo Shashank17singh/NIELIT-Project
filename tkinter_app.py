@@ -152,7 +152,7 @@ class HousePricePredictorApp:
         # Save to SQLite
         try:
             save_prediction(area, bhk, prop_type, region, status, age, pred)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print("Failed to save to SQLite:", e)
 
         messagebox.showinfo(
