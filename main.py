@@ -72,15 +72,46 @@ h1, h2, h3, h4, h5, h6 {
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+import sqlite3
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+def init_db():
+    """Initializes the SQLite database for prediction history."""
+    conn = sqlite3.connect('predictions.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS prediction_history
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  area REAL, bhk INTEGER, prop_type TEXT, region TEXT, 
+                  status TEXT, age TEXT, predicted_price REAL)''')
+    conn.commit()
+    conn.close()
+
+def save_prediction(area, bhk, prop_type, region, status, age, price):
+    """Saves a prediction instance to the SQLite database."""
+    conn = sqlite3.connect('predictions.db')
+    c = conn.cursor()
+    c.execute('''INSERT INTO prediction_history (area, bhk, prop_type, region, status, age, predicted_price)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)''', (area, bhk, prop_type, region, status, age, price))
+    conn.commit()
+    conn.close()
+
+def load_history():
+    """Loads prediction history from the SQLite database."""
+    conn = sqlite3.connect('predictions.db')
+    df_hist = pd.read_sql_query("SELECT * FROM prediction_history ORDER BY id DESC", conn)
+    conn.close()
+    return df_hist
+
+init_db()
 
 
 @st.cache_resource
@@ -117,26 +148,39 @@ def load_and_train():
         ],
         remainder="passthrough",
     )
-    model = Pipeline(
+    model_rf = Pipeline(
         steps=[
             ("preprocessor", preprocessor),
-            (
-                "regressor",
-                RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1),
-            ),
+            ("regressor", RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1)),
         ]
     )
+    
+    model_lr = Pipeline(
+        steps=[
+            ("preprocessor", preprocessor),
+            ("regressor", LinearRegression()),
+        ]
+    )
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    r2 = r2_score(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-    return model, df, r2, mae
+    
+    model_rf.fit(X_train, y_train)
+    model_lr.fit(X_train, y_train)
+    
+    y_pred_rf = model_rf.predict(X_test)
+    y_pred_lr = model_lr.predict(X_test)
+
+    metrics = {
+        "rf": {"r2": r2_score(y_test, y_pred_rf), "mae": mean_absolute_error(y_test, y_pred_rf)},
+        "lr": {"r2": r2_score(y_test, y_pred_lr), "mae": mean_absolute_error(y_test, y_pred_lr)}
+    }
+    
+    return model_rf, model_lr, df, metrics
 
 
-model, df, r2, mae = load_and_train()
+model_rf, model_lr, df, metrics = load_and_train()
 
 
 def format_inr(number: float) -> str:
@@ -154,7 +198,7 @@ def format_inr(number: float) -> str:
 
 
 st.title("House Price Predictor")
-tab1, tab2 = st.tabs(["Price Predictor", "Data Analytics"])
+tab1, tab2, tab3 = st.tabs(["Price Predictor", "Data Analytics", "Prediction History (SQLite)"])
 with tab1:
     st.subheader("Estimate Property Value")
     col1, col2 = st.columns(2)
@@ -185,14 +229,23 @@ with tab1:
                 }
             ]
         )
-        pred = model.predict(input_data)[0]
+        pred = model_rf.predict(input_data)[0]
+        save_prediction(area, bhk, prop_type, region, status, age, pred)
         st.success(f"### Estimated Price: {format_inr(pred)}")
 with tab2:
     st.subheader("Market Insights & Model Performance")
     st.write("### Model Evaluation Metrics (Test Set)")
+    
+    st.write("**Random Forest (Advanced Implementation)**")
     m1, m2 = st.columns(2)
-    m1.metric(label="R² Score (Accuracy)", value=f"{r2:.2f}")
-    m2.metric(label="Mean Absolute Error (MAE)", value=format_inr(mae))
+    m1.metric(label="R² Score (Accuracy)", value=f"{metrics['rf']['r2']:.2f}")
+    m2.metric(label="Mean Absolute Error (MAE)", value=format_inr(metrics['rf']['mae']))
+    
+    st.write("**Linear Regression (NIELIT Course Baseline)**")
+    m3, m4 = st.columns(2)
+    m3.metric(label="R² Score (Accuracy)", value=f"{metrics['lr']['r2']:.2f}")
+    m4.metric(label="Mean Absolute Error (MAE)", value=format_inr(metrics['lr']['mae']))
+    
     st.divider()
     col3, col4 = st.columns(2)
     with col3:
@@ -223,3 +276,13 @@ with tab2:
     fig2, ax2 = plt.subplots(figsize=(8, 6))
     sns.heatmap(numeric_df.corr(), annot=True, cmap="coolwarm", fmt=".2f", ax=ax2)
     st.pyplot(fig2)
+
+with tab3:
+    st.subheader("Prediction History")
+    st.write("This tab retrieves past predictions stored in a local **SQLite Database**, demonstrating data persistence.")
+    history_df = load_history()
+    if not history_df.empty:
+        history_df["predicted_price_formatted"] = history_df["predicted_price"].apply(format_inr)
+        st.dataframe(history_df, use_container_width=True)
+    else:
+        st.info("No predictions made yet. Go to the 'Price Predictor' tab to make your first prediction!")

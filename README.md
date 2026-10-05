@@ -67,10 +67,11 @@ graph TD
 
 |                              |                                                                  |
 | ---------------------------- | ---------------------------------------------------------------- |
-| **Random Forest Regressor**  | High-accuracy modeling pipeline trained on 76k+ records          |
+| **Interactive UIs**          | Glassmorphism Streamlit web app & local Tkinter desktop GUI      |
+| **Dual ML Models**           | Compares Random Forest against a Linear Regression baseline      |
+| **Data Persistence**         | Uses SQLite to log user prediction history locally               |
 | **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding     |
-| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib            |
-| **Responsive UI**            | Built entirely with Streamlit for a fast, interactive experience |
+| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib & Seaborn  |
 
 ---
 
@@ -78,8 +79,10 @@ graph TD
 
 - **Language** - Python 3.x
 - **Web Framework** - Streamlit
-- **Machine Learning** - scikit-learn (Random Forest Pipeline, ColumnTransformer)
-- **Data & Analytics** - pandas, NumPy, Matplotlib
+- **Desktop GUI** - Tkinter (`tkinter_app.py`)
+- **Machine Learning** - scikit-learn (Random Forest, Linear Regression, ColumnTransformer)
+- **Data & Analytics** - pandas, NumPy, Matplotlib, Seaborn
+- **Database** - SQLite (`predictions.db`)
 
 ---
 
@@ -98,13 +101,21 @@ cd NIELIT-Project
 pip install -r requirements.txt
 ```
 
-### 3. Run the app
+### 3. Run the applications
+
+Start the Streamlit web server:
 
 ```bash
 streamlit run main.py
 ```
 
-Switch between the **Prediction** and **Analytics** tabs from the sidebar to explore the application!
+Or, run the standalone Tkinter desktop application:
+
+```bash
+python tkinter_app.py
+```
+
+Switch between the **Prediction**, **Analytics**, and **Prediction History** tabs from the sidebar to explore the web application!
 
 ---
 
@@ -120,5 +131,6 @@ Switch between the **Prediction** and **Analytics** tabs from the sidebar to exp
 
 | File               | Purpose / Details                                |
 | ------------------ | ------------------------------------------------ |
-| `main.py`          | Core component logic and implementation details. |
-| `requirements.txt` | Core component logic and implementation details. |
+| `main.py`          | Core Streamlit app, model training, and SQLite logic. |
+| `tkinter_app.py`   | Desktop GUI alternative using Tkinter. |
+| `requirements.txt` | Project dependencies. |
