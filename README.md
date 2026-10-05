@@ -65,13 +65,13 @@ graph TD
 
 ## Features
 
-|                              |                                                                  |
-| ---------------------------- | ---------------------------------------------------------------- |
-| **Interactive UIs**          | Glassmorphism Streamlit web app & local Tkinter desktop GUI      |
-| **Dual ML Models**           | Compares Random Forest against a Linear Regression baseline      |
-| **Data Persistence**         | Uses SQLite to log user prediction history locally               |
-| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding     |
-| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib & Seaborn  |
+|                              |                                                                 |
+| ---------------------------- | --------------------------------------------------------------- |
+| **Interactive UIs**          | Glassmorphism Streamlit web app & local Tkinter desktop GUI     |
+| **Dual ML Models**           | Compares Random Forest against a Linear Regression baseline     |
+| **Data Persistence**         | Uses SQLite to log user prediction history locally              |
+| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding    |
+| **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib & Seaborn |
 
 ---
 
@@ -129,8 +129,8 @@ Switch between the **Prediction**, **Analytics**, and **Prediction History** tab
 
 ## Deep Codebase Analysis
 
-| File               | Purpose / Details                                |
-| ------------------ | ------------------------------------------------ |
+| File               | Purpose / Details                                     |
+| ------------------ | ----------------------------------------------------- |
 | `main.py`          | Core Streamlit app, model training, and SQLite logic. |
-| `tkinter_app.py`   | Desktop GUI alternative using Tkinter. |
-| `requirements.txt` | Project dependencies. |
+| `tkinter_app.py`   | Desktop GUI alternative using Tkinter.                |
+| `requirements.txt` | Project dependencies.                                 |
