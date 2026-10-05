@@ -16,7 +16,7 @@
 
 ## Overview
 
-Developed a robust House Price Prediction application featuring a **Streamlit** web app and a local **Tkinter** desktop GUI. Trained on a real-world dataset of **76,000+ Mumbai property listings**, the application compares a baseline **Linear Regression** model with a high-accuracy **Random Forest** pipeline.
+A machine learning pipeline for predicting property prices in Mumbai. It includes a Random Forest model, a Streamlit web app, a Tkinter desktop GUI, and an SQLite database for persistent records.
 
 It integrates a **SQLite** database to log user prediction queries, processes dynamic user inputs through a `ColumnTransformer`, and features a dedicated **Data Analytics** tab providing insights powered by Matplotlib and Seaborn.
 
