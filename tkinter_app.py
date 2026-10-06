@@ -2,6 +2,7 @@
 Tkinter desktop client for the House Price Predictor.
 Shares ML logic and SQLite persistence with the main Streamlit application.
 """
+
 import tkinter as tk
 from tkinter import messagebox, ttk
 

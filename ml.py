@@ -2,7 +2,7 @@
 Machine learning pipeline for the House Price Predictor.
 Handles data loading, preprocessing, and model training.
 """
-from typing import Tuple, Dict
+
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
@@ -11,6 +11,7 @@ from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
 
 def _convert_price(row: pd.Series) -> float:
     """Normalizes the price unit to raw INR."""
@@ -21,7 +22,10 @@ def _convert_price(row: pd.Series) -> float:
         return p * 100000
     return p
 
-def load_and_train() -> Tuple[Pipeline, Pipeline, pd.DataFrame, Dict[str, Dict[str, float]]]:
+
+def load_and_train() -> tuple[
+    Pipeline, Pipeline, pd.DataFrame, dict[str, dict[str, float]]
+]:
     """
     Loads dataset, preprocesses features, and trains Random Forest and Linear Regression models.
     Returns: (rf_model, lr_model, cleaned_dataframe, metrics_dictionary)
@@ -32,22 +36,22 @@ def load_and_train() -> Tuple[Pipeline, Pipeline, pd.DataFrame, Dict[str, Dict[s
     )
 
     df["price_inr"] = df.apply(_convert_price, axis=1)
-    
+
     # Remove extreme outliers based on simple domain knowledge
     df = df[df["area"] < 5000]
     df = df[df["price_inr"] < 500000000]
     df = df[df["bhk"] < 10]
-    
+
     # Group uncommon regions into "Other"
     top_regions = df["region"].value_counts().nlargest(50).index
     df["region_clean"] = df["region"].where(df["region"].isin(top_regions), "Other")
-    
+
     X = df[["bhk", "area", "region_clean", "type", "status", "age"]]
     y = df["price_inr"]
-    
+
     categorical_features = ["region_clean", "type", "status", "age"]
     numeric_features = ["bhk", "area"]
-    
+
     preprocessor = ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), numeric_features),
@@ -55,11 +59,14 @@ def load_and_train() -> Tuple[Pipeline, Pipeline, pd.DataFrame, Dict[str, Dict[s
         ],
         remainder="passthrough",
     )
-    
+
     model_rf = Pipeline(
         steps=[
             ("preprocessor", preprocessor),
-            ("regressor", RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1)),
+            (
+                "regressor",
+                RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=-1),
+            ),
         ]
     )
 

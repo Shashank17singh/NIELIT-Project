@@ -2,23 +2,27 @@
 House Price Predictor application for Mumbai properties.
 Integrates SQLite persistence and Scikit-Learn modeling pipelines.
 """
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-from db import init_db, save_prediction, load_history
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import streamlit as st
+
+from db import init_db, load_history, save_prediction
 from ml import load_and_train
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
 init_db()
 
+
 @st.cache_resource
 def cached_load_and_train():
     return load_and_train()
 
+
 model_rf, model_lr, df, metrics = cached_load_and_train()
+
 
 def format_inr(number: float) -> str:
     """Formats a number into an Indian Rupee string (e.g., ₹1,00,000)."""
@@ -33,6 +37,7 @@ def format_inr(number: float) -> str:
     res = s + "," + res
     return "₹" + res
 
+
 st.title("House Price Predictor")
 tab1, tab2, tab3 = st.tabs(
     ["Price Predictor", "Data Analytics", "Prediction History (SQLite)"]
@@ -43,7 +48,11 @@ with tab1:
     col1, col2 = st.columns(2)
     with col1:
         area = st.number_input(
-            "Area (in sqft):", min_value=100.0, max_value=10000.0, value=1000.0, step=50.0
+            "Area (in sqft):",
+            min_value=100.0,
+            max_value=10000.0,
+            value=1000.0,
+            step=50.0,
         )
         bhk = st.number_input("Number of BHK:", min_value=1, max_value=10, value=2)
         prop_type = st.selectbox("Property Type:", df["type"].unique())
@@ -53,9 +62,18 @@ with tab1:
         age = st.selectbox("Age of Property:", df["age"].unique())
 
     if st.button("Predict Price", type="primary"):
-        input_data = pd.DataFrame([
-            {"bhk": bhk, "area": area, "region_clean": region, "type": prop_type, "status": status, "age": age}
-        ])
+        input_data = pd.DataFrame(
+            [
+                {
+                    "bhk": bhk,
+                    "area": area,
+                    "region_clean": region,
+                    "type": prop_type,
+                    "status": status,
+                    "age": age,
+                }
+            ]
+        )
         pred = model_rf.predict(input_data)[0]
         save_prediction(area, bhk, prop_type, region, status, age, pred)
         st.success(f"### Estimated Price: {format_inr(pred)}")
@@ -78,14 +96,21 @@ with tab2:
     col3, col4 = st.columns(2)
     with col3:
         st.write("#### Average Price by Top 10 Regions")
-        top_10 = df[df["region_clean"] != "Other"].groupby("region_clean")["price_inr"].mean().nlargest(10)
+        top_10 = (
+            df[df["region_clean"] != "Other"]
+            .groupby("region_clean")["price_inr"]
+            .mean()
+            .nlargest(10)
+        )
         st.bar_chart(top_10)
-    
+
     with col4:
         st.write("#### Price vs Area")
         sample_df = df.sample(min(2000, len(df)))
         fig, ax = plt.subplots()
-        ax.scatter(sample_df["area"], sample_df["price_inr"] / 10000000, alpha=0.5, c="#00a4d6")
+        ax.scatter(
+            sample_df["area"], sample_df["price_inr"] / 10000000, alpha=0.5, c="#00a4d6"
+        )
         ax.set_xlabel("Area (sqft)")
         ax.set_ylabel("Price (Crores INR)")
         ax.spines["top"].set_visible(False)
@@ -101,10 +126,16 @@ with tab2:
 
 with tab3:
     st.subheader("Prediction History")
-    st.write("This tab retrieves past predictions stored in a local **SQLite Database**, demonstrating data persistence.")
+    st.write(
+        "This tab retrieves past predictions stored in a local **SQLite Database**, demonstrating data persistence."
+    )
     history_df = load_history()
     if not history_df.empty:
-        history_df["predicted_price_formatted"] = history_df["predicted_price"].apply(format_inr)
+        history_df["predicted_price_formatted"] = history_df["predicted_price"].apply(
+            format_inr
+        )
         st.dataframe(history_df, use_container_width=True)
     else:
-        st.info("No predictions made yet. Go to the 'Price Predictor' tab to make your first prediction!")
+        st.info(
+            "No predictions made yet. Go to the 'Price Predictor' tab to make your first prediction!"
+        )
