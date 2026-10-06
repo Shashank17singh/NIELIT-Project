@@ -127,10 +127,4 @@ Switch between the **Prediction**, **Analytics**, and **Prediction History** tab
 
 ---
 
-## Deep Codebase Analysis
 
-| File               | Purpose / Details                                     |
-| ------------------ | ----------------------------------------------------- |
-| `main.py`          | Core Streamlit app, model training, and SQLite logic. |
-| `tkinter_app.py`   | Desktop GUI alternative using Tkinter.                |
-| `requirements.txt` | Project dependencies.                                 |
