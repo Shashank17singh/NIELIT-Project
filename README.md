@@ -18,7 +18,7 @@
 
 A machine learning pipeline for predicting property prices in Mumbai. It includes a Random Forest model, a Streamlit web app, a Tkinter desktop GUI, and an SQLite database for persistent records.
 
-It integrates a **SQLite** database to log user prediction queries, processes dynamic user inputs through a `ColumnTransformer`, and features a dedicated **Data Analytics** tab providing insights powered by Matplotlib and Seaborn.
+It integrates a **SQLite** database to log user prediction queries, processes dynamic user inputs through a `ColumnTransformer`, and has a **Data Analytics** tab with Matplotlib and Seaborn charts.
 
 ---
 
@@ -70,7 +70,7 @@ graph TD
 | **Interactive UIs**          | Glassmorphism Streamlit web app & local Tkinter desktop GUI     |
 | **Dual ML Models**           | Compares Random Forest against a Linear Regression baseline     |
 | **Data Persistence**         | Uses SQLite to log user prediction history locally              |
-| **Data Processing Pipeline** | Integrated `ColumnTransformer` for robust scaling & encoding    |
+| **Data Processing Pipeline** | `ColumnTransformer` for scaling and encoding    |
 | **Data Analytics Dashboard** | Visualizes Mumbai real-estate trends using Matplotlib & Seaborn |
 
 ---
