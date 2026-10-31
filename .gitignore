@@ -23,3 +23,10 @@ Thumbs.db
 
 # Secrets
 .env
+
+# Local AI assistant configuration
+.agents/
+
+# Personal documents
+NIELIT.pdf
+NIELIT Certificate.pdf
