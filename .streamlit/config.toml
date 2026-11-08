@@ -1,0 +1,8 @@
+[theme]
+# Pale sage with olive, a property-listing feel.
+base = "light"
+primaryColor = "#4d7c0f"
+backgroundColor = "#f6f8f4"
+secondaryBackgroundColor = "#e4eadf"
+textColor = "#1c2418"
+font = "serif"
