@@ -165,10 +165,10 @@ Live deployment is hosted on Streamlit Community Cloud at [nielit-project.stream
 
 ---
 
-## Known Limitations
+## Operational Considerations & Limitations
 
-- Model inference is calibrated for Mumbai residential real estate transactions and requires retraining for non-Mumbai geographical regions.
-- Outlier filtering removes irregular configurations (e.g. extreme BHK counts with low square footage).
+- **Regional Real Estate Dynamics**: Machine learning models are calibrated on Mumbai metropolitan housing datasets; regional property valuation in other markets requires localized feature retraining.
+- **Data Filtering & Boundaries**: Preprocessing scripts prune irregular configurations (e.g. non-standard carpet area to bedroom ratios) to prevent distortion in regression estimators.
 
 ---
 
